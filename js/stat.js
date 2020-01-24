@@ -22,11 +22,18 @@ var getColor = function (param, paramValue, color1, color2) {
   } else {
     return color2;
   }
-}
+};
+
+var getBarHeight = function (time, maxInt) {
+  if (time === maxInt) {
+    return MAX_HEIGHT;
+  } else {
+    return time * MAX_HEIGHT / maxInt;
+  }
+};
 
 window.renderStatistics = function (ctx, names, times) {
   var maxTime = Math.round(Math.max.apply(Math, times));
-  var customColor = 'hsl(240, ' + Math.round(Math.random() * 100) + '%, 30%)';
 
   renderCloud(ctx, CLOUD_X + 10, CLOUD_Y + 10, 'rgba(0, 0, 0, 0.7)', CLOUD_WIDTH, CLOUD_HEIGHT);
 
@@ -40,21 +47,15 @@ window.renderStatistics = function (ctx, names, times) {
   var columnX = 140;
   for (var i = 0; i < names.length; i++) {
     var playerTime = Math.round(times[i]);
+    var customColor = 'hsl(240, ' + Math.round(Math.random() * 100) + '%, 30%)';
     ctx.fillStyle = '#000';
     ctx.font = '16px, PT mono';
     ctx.fillText(names[i], columnX, 260);
 
-    if (playerTime === maxTime) {
-      var barHeight = 150;
-    } else {
-      barHeight = times[i] * MAX_HEIGHT / maxTime;
-    }
-    ctx.fillText(playerTime, columnX, BAR_Y - barHeight);
-
+    ctx.fillText(playerTime, columnX, BAR_Y - getBarHeight(playerTime, maxTime));
 
     ctx.fillStyle = getColor(names[i], 'Вы', specialColor, customColor);
-
-    ctx.fillRect(columnX, BAR_Y - barHeight + 10, COLUMN_WIDTH, barHeight);
+    ctx.fillRect(columnX, BAR_Y - getBarHeight(playerTime, maxTime) + 10, COLUMN_WIDTH, getBarHeight(playerTime, maxTime));
 
     columnX += COLUMN_WIDTH + GAP;
   }
