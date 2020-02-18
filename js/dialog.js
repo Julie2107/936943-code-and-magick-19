@@ -10,7 +10,7 @@
   var dialogHandler = userDialog.querySelector('.upload');
 
   var onPopupEscPress = function (evt) {
-    window.util.isEscEvent(evt, closePopup);
+    window.util.isEscEvent(evt, window.dialog.closePopup);
   };
 
   var openPopup = function () {
@@ -18,12 +18,15 @@
     document.addEventListener('keydown', onPopupEscPress);
   };
 
-  var closePopup = function () {
-    userDialog.classList.add('hidden');
+  window.dialog = {
+    closePopup: function () {
+      userDialog.classList.add('hidden');
+    }
   };
 
   profileButton.addEventListener('click', function () {
     openPopup();
+    window.backend.load(window.setup.successHandler, window.setup.errorHandler);
     userDialog.style.left = USER_DIALOG_X;
     userDialog.style.top = USER_DIALOG_Y;
   });
@@ -33,12 +36,12 @@
   });
 
   closeProfileButton.addEventListener('click', function () {
-    closePopup();
+    window.dialog.closePopup();
     document.removeEventListener('keydown', onPopupEscPress);
   });
 
   closeProfileButton.addEventListener('keydown', function (evt) {
-    window.util.isEnterEvent(evt, closePopup);
+    window.util.isEnterEvent(evt, window.dialog.closePopup);
   });
 
   dialogHandler.addEventListener('mousedown', function (evt) {
